@@ -16,7 +16,8 @@ namespace StringCalculator
 
         public static int ParseInput(string input)
         {
-            var splitInputs = input.Split(',');
+            var delimiters = new string[] { "," , "\\n" };
+            var splitInputs = input.Split(delimiters, StringSplitOptions.RemoveEmptyEntries);
             var numbers = new List<int>();
 
             foreach (var splitInput in splitInputs)
