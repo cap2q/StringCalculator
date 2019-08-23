@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Text.RegularExpressions;
 
 namespace StringCalculator
 {
@@ -39,7 +40,7 @@ namespace StringCalculator
                 if (int.TryParse(splitInput, out int number))
                 {
                     if (number > 1000)
-                    {         
+                    {
                         numbers.Add(0);
                     }
                     else
@@ -63,18 +64,32 @@ namespace StringCalculator
 
             if (input.StartsWith(sequence))
             {
-                int index = input.IndexOf("]");
-                var delimiter = input.Substring(sequence.Length, index - sequence.Length);
-                delimiters.Add(delimiter);
+                delimiters.AddRange(ParseMultipleDelimiters(input));
             }
             else if (input.Length > 4 && input.StartsWith("//") && input[3] == '\\' && input[4] == 'n')
             {
                 delimiters.Add(input[2].ToString());
                 input = input.Substring(5, input.Length - 5);
             }
-            
-            
+
+
             return input.Split(delimiters.ToArray(), StringSplitOptions.RemoveEmptyEntries);
+        }
+
+        private static List<string> ParseMultipleDelimiters(string input)
+        {
+            List<string> delimiters = new List<string>();
+            var regex = new Regex(@"\[(.*?)\]");
+
+            foreach (Match match in regex.Matches(input))
+            {
+                if (match.Groups.Count > 0)
+                {
+                    delimiters.Add(match.Groups[1].Value);
+                }
+            }
+
+            return delimiters;
         }
     }
 }

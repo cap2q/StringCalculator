@@ -17,6 +17,7 @@ namespace StringCalculatorTests
         // 7. Numbers greater than 1000 are returned as 0
         // 8. Supports a single custom delimiter
         // 9. Supports delimiters of any length
+        // 10. Supports multiple delimiters
 
         [TestMethod]
         public void TestParseInput()
@@ -79,6 +80,14 @@ namespace StringCalculatorTests
             var input = "//[***]\\n11***22***33";
             var total = Program.ParseInput(input);
             Assert.AreEqual(66, total);
+        }
+
+        [TestMethod]
+        public void TestMultipleDelimiters()
+        {
+            var input = "//[*][!!][rrr]\\n11rrr22*33!!44";
+            var total = Program.ParseInput(input);
+            Assert.AreEqual(110, total);
         }
     }
 }
