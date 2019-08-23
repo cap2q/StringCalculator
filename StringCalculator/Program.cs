@@ -17,12 +17,6 @@ namespace StringCalculator
         public static int ParseInput(string input)
         {
             var splitInputs = input.Split(',');
-
-            if (splitInputs.Length > 2)
-            {
-                throw new ArgumentException("Only two numbers can be used.");
-            }
-
             var numbers = new List<int>();
 
             foreach (var splitInput in splitInputs)
