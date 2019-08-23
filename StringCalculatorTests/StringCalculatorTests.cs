@@ -15,13 +15,14 @@ namespace StringCalculatorTests
         // 5. Supports \n as delimiter
         // 6. Negative numbers throw an exception
         // 7. Numbers greater than 1000 are returned as 0
+        // 8. Supports a single custom delimiter
 
         [TestMethod]
         public void TestParseInput()
         {
             var input = "1,20";
             var total = Program.ParseInput(input);
-            Assert.AreEqual(total, 21);
+            Assert.AreEqual(21, total);
         }
 
         [TestMethod]
@@ -29,7 +30,7 @@ namespace StringCalculatorTests
         {
             var input = "5,tytyt";
             var total = Program.ParseInput(input);
-            Assert.AreEqual(total, 5);
+            Assert.AreEqual(5, total);
         }
 
         [TestMethod]
@@ -37,7 +38,7 @@ namespace StringCalculatorTests
         {
             var input = "2,3,5,7,11,13";
             var total = Program.ParseInput(input);
-            Assert.AreEqual(total, 41);
+            Assert.AreEqual(41, total);
         }
 
         [TestMethod]
@@ -45,7 +46,7 @@ namespace StringCalculatorTests
         {
             var input = "1\\n2,3";
             var total = Program.ParseInput(input);
-            Assert.AreEqual(total, 6);
+            Assert.AreEqual(6, total);
         }
 
         [TestMethod]
@@ -60,7 +61,15 @@ namespace StringCalculatorTests
         {
             var input = "2,1001,6";
             var total = Program.ParseInput(input);
-            Assert.AreEqual(total, 8);
+            Assert.AreEqual(8, total);
+        }
+
+        [TestMethod]
+        public void TestSingleCustomDelimiter()
+        {
+            var input = "//;\\n2;5";
+            var total = Program.ParseInput(input);
+            Assert.AreEqual(7, total);
         }
     }
 }

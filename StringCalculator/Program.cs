@@ -16,8 +16,7 @@ namespace StringCalculator
 
         public static int ParseInput(string input)
         {
-            var delimiters = new string[] { ",", "\\n" };
-            var splitInputs = input.Split(delimiters, StringSplitOptions.RemoveEmptyEntries);
+            var splitInputs = SplitInput(input);
             var numbers = SanitizeInput(splitInputs);
             var negativeNumbers = numbers.Where(x => x < 0).ToList();
 
@@ -55,6 +54,19 @@ namespace StringCalculator
             }
 
             return numbers;
+        }
+
+        public static string[] SplitInput(string input)
+        {
+            var delimiters = new List<string> { ",", "\\n" };
+
+            if (input.Length > 4 && input.StartsWith("//") && input[3] == '\\' && input[4] == 'n')
+            {
+                delimiters.Add(input[2].ToString());
+                input = input.Substring(5, input.Length - 5);
+            }
+            
+            return input.Split(delimiters.ToArray(), StringSplitOptions.RemoveEmptyEntries);
         }
     }
 }
