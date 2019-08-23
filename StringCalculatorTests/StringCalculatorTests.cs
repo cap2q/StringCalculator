@@ -14,6 +14,7 @@ namespace StringCalculatorTests
         // 4. Invalid numbers are converted to zeroes
         // 5. Supports \n as delimiter
         // 6. Negative numbers throw an exception
+        // 7. Numbers greater than 1000 are returned as 0
 
         [TestMethod]
         public void TestParseInput()
@@ -52,6 +53,14 @@ namespace StringCalculatorTests
         {
             var input = "-1000,5,-500,3,-600";
             Assert.ThrowsException<ArgumentOutOfRangeException>(() => Program.ParseInput(input));
+        }
+
+        [TestMethod]
+        public void TestNumbersGreaterThan1000()
+        {
+            var input = "2,1001,6";
+            var total = Program.ParseInput(input);
+            Assert.AreEqual(total, 8);
         }
     }
 }

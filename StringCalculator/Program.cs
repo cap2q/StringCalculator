@@ -8,7 +8,7 @@ namespace StringCalculator
     {
         public static void Main()
         {
-            Console.WriteLine("Enter two numbers, with a comma as a delimiters. Example: 1,2");
+            Console.WriteLine("Enter your numbers. Current delimiters are \\n and comma.");
             var input = Console.ReadLine();
             var total = ParseInput(input);
             Console.WriteLine(total);
@@ -18,27 +18,8 @@ namespace StringCalculator
         {
             var delimiters = new string[] { ",", "\\n" };
             var splitInputs = input.Split(delimiters, StringSplitOptions.RemoveEmptyEntries);
-            var numbers = new List<int>();
-            var negativeNumbers = new List<int>();
-
-            foreach (var splitInput in splitInputs)
-            {
-                if (int.TryParse(splitInput, out int number))
-                {
-                    if (IsValidNumber(number))
-                    {
-                        numbers.Add(number);
-                    }
-                    else
-                    {
-                        negativeNumbers.Add(number);
-                    }
-                }
-                else
-                {
-                    numbers.Add(0);
-                }
-            }
+            var numbers = SanitizeInput(splitInputs);
+            var negativeNumbers = numbers.Where(x => x < 0).ToList();
 
             if (negativeNumbers.Count > 0)
             {
@@ -50,9 +31,30 @@ namespace StringCalculator
             return numbers.Sum();
         }
 
-        public static bool IsValidNumber(int number)
+        public static List<int> SanitizeInput(string[] splitInputs)
         {
-            return number > 0;
+            var numbers = new List<int>();
+
+            foreach (var splitInput in splitInputs)
+            {
+                if (int.TryParse(splitInput, out int number))
+                {
+                    if (number > 1000)
+                    {         
+                        numbers.Add(0);
+                    }
+                    else
+                    {
+                        numbers.Add(number);
+                    }
+                }
+                else
+                {
+                    numbers.Add(0);
+                }
+            }
+
+            return numbers;
         }
     }
 }
