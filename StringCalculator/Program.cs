@@ -59,12 +59,20 @@ namespace StringCalculator
         public static string[] SplitInput(string input)
         {
             var delimiters = new List<string> { ",", "\\n" };
+            string sequence = "//[";
 
-            if (input.Length > 4 && input.StartsWith("//") && input[3] == '\\' && input[4] == 'n')
+            if (input.StartsWith(sequence))
+            {
+                int index = input.IndexOf("]");
+                var delimiter = input.Substring(sequence.Length, index - sequence.Length);
+                delimiters.Add(delimiter);
+            }
+            else if (input.Length > 4 && input.StartsWith("//") && input[3] == '\\' && input[4] == 'n')
             {
                 delimiters.Add(input[2].ToString());
                 input = input.Substring(5, input.Length - 5);
             }
+            
             
             return input.Split(delimiters.ToArray(), StringSplitOptions.RemoveEmptyEntries);
         }
