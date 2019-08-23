@@ -16,15 +16,23 @@ namespace StringCalculator
 
         public static int ParseInput(string input)
         {
-            var delimiters = new string[] { "," , "\\n" };
+            var delimiters = new string[] { ",", "\\n" };
             var splitInputs = input.Split(delimiters, StringSplitOptions.RemoveEmptyEntries);
             var numbers = new List<int>();
+            var negativeNumbers = new List<int>();
 
             foreach (var splitInput in splitInputs)
             {
                 if (int.TryParse(splitInput, out int number))
                 {
-                    numbers.Add(number);
+                    if (IsValidNumber(number))
+                    {
+                        numbers.Add(number);
+                    }
+                    else
+                    {
+                        negativeNumbers.Add(number);
+                    }
                 }
                 else
                 {
@@ -32,7 +40,19 @@ namespace StringCalculator
                 }
             }
 
+            if (negativeNumbers.Count > 0)
+            {
+                string offendingNumbers = "";
+                negativeNumbers.ForEach(x => offendingNumbers += x + " ");
+                throw new ArgumentOutOfRangeException("input", $"Numbers must be positive: {offendingNumbers.Trim()}");
+            }
+
             return numbers.Sum();
+        }
+
+        public static bool IsValidNumber(int number)
+        {
+            return number > 0;
         }
     }
 }

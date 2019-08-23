@@ -1,5 +1,6 @@
 ﻿using StringCalculator;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
+using System;
 
 namespace StringCalculatorTests
 {
@@ -7,11 +8,12 @@ namespace StringCalculatorTests
     public class StringCalculatorTests
     {
         // Requirements:
-        // 1. Adds all valid numbers together.
+        // 1. Adds all valid numbers together
         // 2. Comma delimited
         // 3. Supports 1 or more numbers
         // 4. Invalid numbers are converted to zeroes
         // 5. Supports \n as delimiter
+        // 6. Negative numbers throw an exception
 
         [TestMethod]
         public void TestParseInput()
@@ -43,6 +45,13 @@ namespace StringCalculatorTests
             var input = "1\\n2,3";
             var total = Program.ParseInput(input);
             Assert.AreEqual(total, 6);
+        }
+
+        [TestMethod]
+        public void TestNegativeNumbersThrowsException()
+        {
+            var input = "-1000,5,-500,3,-600";
+            Assert.ThrowsException<ArgumentOutOfRangeException>(() => Program.ParseInput(input));
         }
     }
 }
