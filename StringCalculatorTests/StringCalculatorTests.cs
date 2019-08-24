@@ -18,12 +18,13 @@ namespace StringCalculatorTests
         // 8. Supports a single custom delimiter
         // 9. Supports delimiters of any length
         // 10. Supports multiple delimiters
+        // 11. Supports subtraction, multiplication, and division
 
         [TestMethod]
         public void TestParseInput()
         {
             var input = "1,20";
-            var total = Program.ParseInput(input);
+            var total = Program.CalculateReport("+", Program.ParseInput(input));
             Assert.AreEqual(21, total);
         }
 
@@ -31,7 +32,7 @@ namespace StringCalculatorTests
         public void TestParseInputInvalidNumberConvertsToZero()
         {
             var input = "5,tytyt";
-            var total = Program.ParseInput(input);
+            var total = Program.CalculateReport("+", Program.ParseInput(input));
             Assert.AreEqual(5, total);
         }
 
@@ -39,7 +40,7 @@ namespace StringCalculatorTests
         public void TestParseInputMoreThanTwoNumbers()
         {
             var input = "2,3,5,7,11,13";
-            var total = Program.ParseInput(input);
+            var total = Program.CalculateReport("+", Program.ParseInput(input));
             Assert.AreEqual(41, total);
         }
 
@@ -47,7 +48,7 @@ namespace StringCalculatorTests
         public void TestNewLineAsDelimiter()
         {
             var input = "1\\n2,3";
-            var total = Program.ParseInput(input);
+            var total = Program.CalculateReport("+", Program.ParseInput(input)); ;
             Assert.AreEqual(6, total);
         }
 
@@ -55,14 +56,14 @@ namespace StringCalculatorTests
         public void TestNegativeNumbersThrowsException()
         {
             var input = "-1000,5,-500,3,-600";
-            Assert.ThrowsException<ArgumentOutOfRangeException>(() => Program.ParseInput(input));
+            Assert.ThrowsException<ArgumentOutOfRangeException>(() => Program.CalculateReport("+", Program.ParseInput(input)));
         }
 
         [TestMethod]
         public void TestNumbersGreaterThan1000()
         {
             var input = "2,1001,6";
-            var total = Program.ParseInput(input);
+            var total = Program.CalculateReport("+", Program.ParseInput(input));
             Assert.AreEqual(8, total);
         }
 
@@ -70,7 +71,7 @@ namespace StringCalculatorTests
         public void TestSingleCustomDelimiter()
         {
             var input = "//;\\n2;5";
-            var total = Program.ParseInput(input);
+            var total = Program.CalculateReport("+", Program.ParseInput(input));
             Assert.AreEqual(7, total);
         }
 
@@ -78,7 +79,7 @@ namespace StringCalculatorTests
         public void TestDelimiterOfAnyLength()
         {
             var input = "//[***]\\n11***22***33";
-            var total = Program.ParseInput(input);
+            var total = Program.CalculateReport("+", Program.ParseInput(input));
             Assert.AreEqual(66, total);
         }
 
@@ -86,8 +87,31 @@ namespace StringCalculatorTests
         public void TestMultipleDelimiters()
         {
             var input = "//[*][!!][rrr]\\n11rrr22*33!!44";
-            var total = Program.ParseInput(input);
+            var total = Program.CalculateReport("+", Program.ParseInput(input));
             Assert.AreEqual(110, total);
+        }
+
+        [TestMethod]
+        public void TestSubtraction()
+        {
+            var input = "10,5\\n1";
+            var total = Program.CalculateReport("-", Program.ParseInput(input));
+            Assert.AreEqual(4, total);
+        }
+
+        [TestMethod]
+        public void TestMultiplication()
+        {
+            var input = "//[*][!!][rrr]\\n11rrr22*33!!44";
+            var total = Program.CalculateReport("*", Program.ParseInput(input));
+            Assert.AreEqual(351384, total);
+        }
+        [TestMethod]
+        public void TestDivision()
+        {
+            var input = "//[*][!!][rrr]\\n50*5!!2";
+            var total = Program.CalculateReport("/", Program.ParseInput(input));
+            Assert.AreEqual(5, total);
         }
     }
 }

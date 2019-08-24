@@ -9,13 +9,17 @@ namespace StringCalculator
     {
         public static void Main()
         {
-            Console.WriteLine("Enter your numbers. Current delimiters are \\n and comma.");
-            var input = Console.ReadLine();
-            var total = ParseInput(input);
-            Console.WriteLine(total);
+            for (; ; )
+            {
+                Console.WriteLine("Enter your numbers. Default delimiters are \\n and comma. Custom delimiters are enabled.");
+                var input = Console.ReadLine();
+                var parsedInput = ParseInput(input);
+                Console.WriteLine("Select an operation: + * / -");
+                var operation = Console.ReadLine();
+                CalculateReport(operation, parsedInput);
+            }
         }
-
-        public static int ParseInput(string input)
+        public static List<int> ParseInput(string input)
         {
             var splitInputs = SplitInput(input);
             var numbers = SanitizeInput(splitInputs);
@@ -23,12 +27,12 @@ namespace StringCalculator
 
             if (negativeNumbers.Count > 0)
             {
-                string offendingNumbers = "";
+                var offendingNumbers = "";
                 negativeNumbers.ForEach(x => offendingNumbers += x + " ");
                 throw new ArgumentOutOfRangeException("input", $"Numbers must be positive: {offendingNumbers.Trim()}");
             }
 
-            return numbers.Sum();
+            return numbers;
         }
 
         public static List<int> SanitizeInput(string[] splitInputs)
@@ -48,10 +52,6 @@ namespace StringCalculator
                         numbers.Add(number);
                     }
                 }
-                else
-                {
-                    numbers.Add(0);
-                }
             }
 
             return numbers;
@@ -60,11 +60,13 @@ namespace StringCalculator
         public static string[] SplitInput(string input)
         {
             var delimiters = new List<string> { ",", "\\n" };
-            string sequence = "//[";
+            var sequence = "//[";
 
             if (input.StartsWith(sequence))
             {
                 delimiters.AddRange(ParseMultipleDelimiters(input));
+                var index = input.IndexOf("\\n");
+                input = input.Substring(index + 2, input.Length - index - 2);
             }
             else if (input.Length > 4 && input.StartsWith("//") && input[3] == '\\' && input[4] == 'n')
             {
@@ -72,13 +74,12 @@ namespace StringCalculator
                 input = input.Substring(5, input.Length - 5);
             }
 
-
             return input.Split(delimiters.ToArray(), StringSplitOptions.RemoveEmptyEntries);
         }
 
-        private static List<string> ParseMultipleDelimiters(string input)
+        public static List<string> ParseMultipleDelimiters(string input)
         {
-            List<string> delimiters = new List<string>();
+            var delimiters = new List<string>();
             var regex = new Regex(@"\[(.*?)\]");
 
             foreach (Match match in regex.Matches(input))
@@ -91,5 +92,68 @@ namespace StringCalculator
 
             return delimiters;
         }
+
+        public static int CalculateReport(string operation, List<int> inputs)
+        {
+            var total = 0;
+            Console.WriteLine();
+
+            foreach (var input in inputs)
+            {
+                if (inputs.IndexOf(input) == inputs.Count() - 1)
+                {
+                    Console.Write($"{input} = ");
+                }
+                else
+                {
+                    Console.Write($"{input} {operation} ");
+                }
+            }
+
+            foreach (var input in inputs)
+            {
+                switch (operation)
+                {
+                    case "+":
+                        total = inputs.Sum();
+                        break;
+
+                    case "*":
+                        if (inputs.IndexOf(input) == 0)
+                        {
+                            total = 1;
+                        }
+                        total *= input;
+                        break;
+
+                    case "-":
+                        total = inputs.IndexOf(input) == 0 ? input : total -= input;
+                        break;
+
+                    case "/":
+                        if (inputs.IndexOf(input) == 0)
+                        {
+                            total = input;
+                        }
+                        else
+                        {
+                            if (input != 0)
+                            {
+                                total /= input;
+                            }
+                        }
+                        break;
+
+                    default:
+                        Console.WriteLine("Invalid Operation.");
+                        break;
+                }
+            }
+
+            Console.WriteLine(total);
+            return total;
+        }
     }
 }
+
+
